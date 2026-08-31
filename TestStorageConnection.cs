@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 
-namespace CoffeeNChill.Functions
+namespace CoffeeAndChill.Functions
 {
     public class TestStorageConnection
     {

@@ -1,5 +1,6 @@
 {
   "profiles": {
+    "Project": {
       "commandName": "Project",
       "launchBrowser": false
     }
