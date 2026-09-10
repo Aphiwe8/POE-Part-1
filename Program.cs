@@ -7,14 +7,17 @@ using Microsoft.Extensions.Hosting;
 using OpenTelemetry;
 using CoffeeAndChill.Services;
 
+
+
 var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
 
 
 builder.Services.AddSingleton<MenuTableService>();
+builder.Services.AddSingleton<StaffDocumentService>();
 
-if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
+if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UseDevelopmentStorage=true")))
 {
     builder.Services.AddOpenTelemetry()
         .UseFunctionsWorkerDefaults()

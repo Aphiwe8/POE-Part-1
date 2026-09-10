@@ -1,12 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azure.Storage.Files.Shares;
+using Azure.Storage.Files.Shares.Models;
 
 namespace CoffeeAndChill.Services
 {
-    internal class StaffDocumentService
+    public class StaffDocumentService
     {
+        private readonly ShareClient _shareClient;
+
+        public StaffDocumentService()
+        {
+            string connectionString =
+                Environment.GetEnvironmentVariable("AzureWebJobsStorage")
+                ?? throw new InvalidOperationException(
+                    "AzureWebJobsStorage connection string is missing.");
+
+            _shareClient = new ShareClient(
+                connectionString,
+                "staff-docs");
+        }
+
+        public async Task CreateShareAsync()
+        {
+            await _shareClient.CreateIfNotExistsAsync();
+        }
     }
 }
