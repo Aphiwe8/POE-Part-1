@@ -16,6 +16,7 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services.AddSingleton<MenuTableService>();
 builder.Services.AddSingleton<StaffDocumentService>();
+builder.Services.AddSingleton<BlobStorageService>();
 
 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UseDevelopmentStorage=true")))
 {
