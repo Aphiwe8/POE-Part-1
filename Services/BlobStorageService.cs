@@ -9,9 +9,10 @@ namespace CoffeeAndChill.Services
         public BlobStorageService()
         {
             string connectionString =
-                Environment.GetEnvironmentVariable("AzureWebJobsStorage")
-                ?? throw new InvalidOperationException(
-                    "AzureWebJobsStorage connection string is missing.");
+                "DefaultEndpointsProtocol=http;" +
+                "AccountName=devstoreaccount1;" +
+                "AccountKey=Eby8vdM02xNOcqFlqUwJv8h6w5h1L5e6b5w3Z2Q1V9X0Y8W7U6T5S4R3Q2P1O0N;" +
+                "BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;";
 
             BlobServiceClient blobServiceClient =
                 new BlobServiceClient(connectionString);
