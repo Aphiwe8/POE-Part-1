@@ -5,6 +5,7 @@ using Microsoft.Azure.Functions.Worker;
 
 namespace CoffeeNChill.Functions
 {
+    
     public class DeleteStaffDocument
     {
         [Function("DeleteStaffDocument")]
