@@ -10,5 +10,6 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services.AddSingleton<MenuTableService>();
 builder.Services.AddSingleton<BlobStorageService>();
+builder.Services.AddSingleton<OrderTableService>();
 
 builder.Build().Run();
