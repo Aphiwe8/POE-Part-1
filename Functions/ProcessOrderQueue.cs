@@ -50,11 +50,20 @@ namespace CoffeeAndChill.Functions
                     return;
                 }
 
+                //  Table Storage rejects dates before 1601
+                if (order.OrderTimestamp == default)
+                {
+                    order.OrderTimestamp = DateTimeOffset.UtcNow;
+                }
+
                 // Initial status
                 order.Status = "Received";
 
                 // Save order to Azure Table
                 await _orderTableService.AddOrderAsync(order);
+
+                // PartitionKey (yyyy-MM-dd) is set inside AddOrderAsync
+                string orderDate = order.PartitionKey;
 
                 _logger.LogInformation(
                     "Order {OrderId} received and stored.",
@@ -66,7 +75,7 @@ namespace CoffeeAndChill.Functions
                 order.Status = "Preparing";
 
                 await _orderTableService.UpdateOrderStatusAsync(
-                    order.OrderTimestamp.UtcDateTime.ToString("yyyy-MM-dd"),
+                    orderDate,
                     order.OrderId,
                     order.Status);
 
@@ -80,7 +89,7 @@ namespace CoffeeAndChill.Functions
                 order.Status = "Ready";
 
                 await _orderTableService.UpdateOrderStatusAsync(
-                    order.OrderTimestamp.UtcDateTime.ToString("yyyy-MM-dd"),
+                    orderDate,
                     order.OrderId,
                     order.Status);
 
@@ -94,7 +103,7 @@ namespace CoffeeAndChill.Functions
                 order.Status = "Collected";
 
                 await _orderTableService.UpdateOrderStatusAsync(
-                    order.OrderTimestamp.UtcDateTime.ToString("yyyy-MM-dd"),
+                    orderDate,
                     order.OrderId,
                     order.Status);
 
