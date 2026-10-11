@@ -6,10 +6,11 @@
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
+	  <GenerateFunctionMetadata>true</GenerateFunctionMetadata>
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
     <PackageReference Include="Azure.Storage.Files.Shares" Version="12.27.1" />
@@ -19,8 +20,14 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.OpenTelemetry" Version="1.2.0" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.7.0" />
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.7" />
+	 <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.17.4" OutputItemType="Analyzer" />
+	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	  <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
   </ItemGroup>
-
+	<Target Name="CopyFunctionsMetadataToAzureFunctionsFolder" AfterTargets="Publish">
+		<Copy SourceFiles="$(PublishDir)functions.metadata"
+			  DestinationFolder="$(PublishDir).azurefunctions\"
+			  SkipUnchangedFiles="true"
+			  Condition="Exists('$(PublishDir)functions.metadata')" />
+	</Target>
 </Project>
