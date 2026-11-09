@@ -1,0 +1,44 @@
+
+name: CoffeeNChill CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build .NET Projects
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Find and build projects
+        shell: bash
+        run: |
+          mapfile -t projects < <(find . -type f -name "*.csproj" \
+            -not -path "*/bin/*" \
+            -not -path "*/obj/*")
+
+          if [ ${#projects[@]} -eq 0 ]; then
+            echo "No .NET projects found."
+            exit 1
+          fi
+
+          for project in "${projects[@]}"; do
+            echo "Building: $project"
+            dotnet restore "$project"
+            dotnet build "$project" --configuration Release --no-restore
+          done
