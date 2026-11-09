@@ -2,6 +2,8 @@
 using CoffeeAndChill.Models;
 using System.Text.Json;
 using Azure;
+using Microsoft.Extensions.Configuration;
+
 
 namespace CoffeeAndChill.Services
 {
@@ -9,11 +11,11 @@ namespace CoffeeAndChill.Services
     {
         private readonly TableClient _tableClient;
 
-        public OrderTableService()
+        public OrderTableService(IConfiguration configuration)
         {
             string connectionString =
-                Environment.GetEnvironmentVariable("AzureWebJobsStorage")
-                ?? throw new InvalidOperationException("AzureWebJobsStorage is missing.");
+                configuration["AzureWebJobsStorage"]
+                ?? throw new InvalidOperationException("AzureWebJobsStorage connection string is missing.");
 
             _tableClient = new TableClient(connectionString, "Orders");
         }
