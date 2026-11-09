@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.13.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
     <PackageReference Include="Azure.Storage.Files.Shares" Version="12.27.1" />
     <PackageReference Include="Azure.Storage.Queues" Version="12.28.1" />
@@ -24,10 +24,11 @@
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
 	  <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoffeeAndChill.ApiGateway\CoffeeAndChill.ApiGateway.csproj" />
+  </ItemGroup>
 	<Target Name="CopyFunctionsMetadataToAzureFunctionsFolder" AfterTargets="Publish">
-		<Copy SourceFiles="$(PublishDir)functions.metadata"
-			  DestinationFolder="$(PublishDir).azurefunctions\"
-			  SkipUnchangedFiles="true"
-			  Condition="Exists('$(PublishDir)functions.metadata')" />
+		<Copy SourceFiles="$(PublishDir)functions.metadata" DestinationFolder="$(PublishDir).azurefunctions\" SkipUnchangedFiles="true" Condition="Exists('$(PublishDir)functions.metadata')" />
 	</Target>
 </Project>
