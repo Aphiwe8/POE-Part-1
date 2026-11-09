@@ -26,7 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CoffeeAndChill.ApiGateway\CoffeeAndChill.ApiGateway.csproj" />
+    <ProjectReference Include="CoffeeAndChill.ApiGateway\CoffeeAndChill.ApiGateway.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="CoffeeAndChill.ApiGateway\**" />
   </ItemGroup>
 	<Target Name="CopyFunctionsMetadataToAzureFunctionsFolder" AfterTargets="Publish">
 		<Copy SourceFiles="$(PublishDir)functions.metadata" DestinationFolder="$(PublishDir).azurefunctions\" SkipUnchangedFiles="true" Condition="Exists('$(PublishDir)functions.metadata')" />
