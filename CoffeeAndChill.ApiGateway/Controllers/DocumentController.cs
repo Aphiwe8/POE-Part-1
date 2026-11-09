@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CoffeeAndChill.ApiGateway.Controllers
 {
     [ApiController]
     [Route("api/documents")]
+    [Authorize(Roles = "Admin,Staff")]
     public class DocumentController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -19,8 +22,7 @@ namespace CoffeeAndChill.ApiGateway.Controllers
         /// </summary>
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadDocument(
-            IFormFile file)
+        public async Task<IActionResult> UploadDocument(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
@@ -33,9 +35,7 @@ namespace CoffeeAndChill.ApiGateway.Controllers
             var client = _httpClientFactory.CreateClient("Functions");
 
             using var multipartContent = new MultipartFormDataContent();
-
             using var fileStream = file.OpenReadStream();
-
             using var fileContent = new StreamContent(fileStream);
 
             fileContent.Headers.ContentType =
@@ -120,9 +120,10 @@ namespace CoffeeAndChill.ApiGateway.Controllers
         }
 
         /// <summary>
-        /// Deletes a specific staff document.
+        /// Deletes a specific staff document (Admin only).
         /// </summary>
         [HttpDelete("{fileName}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteDocument(string fileName)
         {
             var client = _httpClientFactory.CreateClient("Functions");

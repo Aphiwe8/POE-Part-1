@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace CoffeeAndChill.ApiGateway.Controllers
 {
@@ -18,9 +21,6 @@ namespace CoffeeAndChill.ApiGateway.Controllers
         /// <summary>
         /// Submits an order to the order processing queue.
         /// </summary>
-        /// <summary>
-        /// Submits an order to the order processing queue.
-        /// </summary>
         [HttpPost("queue")]
         [AllowAnonymous]
         [Consumes("application/json")]
@@ -29,7 +29,7 @@ namespace CoffeeAndChill.ApiGateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> QueueOrder(
-            [FromBody] System.Text.Json.JsonElement order)
+            [FromBody] JsonElement order)
         {
             var client = _httpClientFactory.CreateClient("Functions");
 
@@ -62,6 +62,38 @@ namespace CoffeeAndChill.ApiGateway.Controllers
 
             var response = await client.GetAsync(
                 $"api/orders/{Uri.EscapeDataString(orderDate)}/{Uri.EscapeDataString(orderId)}"
+            );
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            return new ContentResult
+            {
+                Content = content,
+                ContentType = response.Content.Headers.ContentType?.ToString()
+                    ?? "application/json",
+                StatusCode = (int)response.StatusCode
+            };
+        }
+
+        /// <summary>
+        /// Updates an order's status (Admin and Staff only).
+        /// </summary>
+        [HttpPut("status")]
+        [Authorize(Roles = "Admin,Staff")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateOrderStatus(
+            [FromBody] JsonElement request)
+        {
+            var client = _httpClientFactory.CreateClient("Functions");
+
+            var response = await client.PutAsJsonAsync(
+                "api/orders/status",
+                request
             );
 
             var content = await response.Content.ReadAsStringAsync();
